@@ -27,6 +27,9 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
+        env:
+          TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
+          TF_VAR_github_owner: ${{ secrets.GH_OWNER }}
         run: terraform plan
 
   apply:

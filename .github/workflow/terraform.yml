@@ -2,10 +2,14 @@ name: Terraform
 on:
   push:
     branches:
-      - *
+      - feature/*
+      - dev
+      - main
   pull_request:
     branches:
       - main
+
+  workflow_dispatch:
 jobs:
   plan:
     runs-on: ubuntu-latest
@@ -17,7 +21,7 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.4.5 # Specify the Terraform version you want to use
+          terraform_version: 1.9.4 # Specify the Terraform version you want to use
 
       - name: Terraform Init
         run: terraform init
@@ -28,11 +32,21 @@ jobs:
 jobs:
   apply:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch'
     steps:
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.9.4
+
       - name: Checkout code
         uses: actions/checkout@v34
 
+      - name: Terraform Init
+        run: terraform init
+
       - name: Terraform Apply
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
+          TF_VAR_github_owner: ${{ secrets.GH_OWNER }}
         run: terraform apply -auto-approve

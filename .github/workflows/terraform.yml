@@ -39,7 +39,7 @@ jobs:
           terraform_version: 1.9.4
 
       - name: Checkout code
-        uses: actions/checkout@v34
+        uses: actions/checkout@v4
 
       - name: Terraform Init
         run: terraform init

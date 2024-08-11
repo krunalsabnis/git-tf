@@ -29,7 +29,6 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
 
-jobs:
   apply:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch'

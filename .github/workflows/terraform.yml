@@ -27,9 +27,11 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan
+        env:
+          TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
+          TF_VAR_github_owner: ${{ secrets.GH_OWNER }}
+        run: terraform plan -var-file=github.tfvars
 
-jobs:
   apply:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch'
@@ -40,7 +42,7 @@ jobs:
           terraform_version: 1.9.4
 
       - name: Checkout code
-        uses: actions/checkout@v34
+        uses: actions/checkout@v4
 
       - name: Terraform Init
         run: terraform init
@@ -49,4 +51,4 @@ jobs:
         env:
           TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
           TF_VAR_github_owner: ${{ secrets.GH_OWNER }}
-        run: terraform apply -auto-approve
+        run: terraform apply -var-file=github.tfvars -auto-approve
